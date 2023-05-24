@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+#define MAX_PROCESSES 3
+
+struct Process {
+    int burstTime;
+    int priority;
+};
+
+void calculateWaitingTime(struct Process processes[], int waitingTime[]) {
+    int i, j;
+
+    // Initialize waiting time of the first process as 0
+    waitingTime[0] = 0;
+
+    // Calculate waiting time for each process
+    for (i = 1; i < MAX_PROCESSES; i++) {
+        waitingTime[i] = 0;
+        for (j = 0; j < i; j++) {
+            waitingTime[i] += processes[j].burstTime;
+        }
+    }
+}
+
+void calculateTurnaroundTime(struct Process processes[], int waitingTime[], int turnaroundTime[]) {
+    int i;
+
+    // Calculate turnaround time for each process
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        turnaroundTime[i] = processes[i].burstTime + waitingTime[i];
+    }
+}
+
+void calculateAverageTimes(struct Process processes[], int waitingTime[], int turnaroundTime[]) {
+    int i;
+    double totalWaitingTime = 0;
+    double totalTurnaroundTime = 0;
+
+    // Calculate total waiting time and total turnaround time
+    for (i = 0; i < MAX_PROCESSES; i++) {
+        totalWaitingTime += waitingTime[i];
+        totalTurnaroundTime += turnaroundTime[i];
+    }
+
+    // Calculate average waiting time and average turnaround time
+    double avgWaitingTime = totalWaitingTime / MAX_PROCESSES;
+    double avgTurnaroundTime = totalTurnaroundTime / MAX_PROCESSES;
+
+    printf("Average Waiting Time: %.2lf\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2lf\n", avgTurnaroundTime);
+}
+
+int main() {
+    struct Process processes[MAX_PROCESSES] = {
+        {30, 2},
+        {5, 1},
+        {12, 3}
+    };
