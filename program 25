@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+int calculateContiguous(int blockNumber, int totalBlocks) {
+    // Assuming the blocks are numbered from 1 to totalBlocks
+    int middleBlock = totalBlocks / 2;
+    int operations = 0;
+
+    if (blockNumber <= middleBlock) {
+        // Block is in the first half
+        operations = blockNumber - 1;
+    } else {
+        // Block is in the second half
+        operations = totalBlocks - blockNumber;
+    }
+
+    return operations;
+}
+
+int calculateLinked(int blockNumber) {
+    int operations = 0;
+
+    // Traverse the linked list until the desired block is reached
+    while (blockNumber > 0) {
+        blockNumber--;
+        operations++;
+    }
+
+    return operations;
+}
+
+int calculateIndexed(int blockNumber, int totalBlocks) {
+    int blockSize = sizeof(int);  // Size of each index entry (assuming it's an integer)
+    int entriesPerBlock = 4096 / blockSize;  // Number of index entries that can fit in a block
+    int indexBlock = (blockNumber - 1) / entriesPerBlock + 1;  // Index block containing the desired block
+    int operations = 0;
+
+    // Seek the index block
+    operations++;
+
+    // Read the index block into memory
+    operations++;
+
+    // Access the desired block's entry in the index block
+    operations++;
+
+    return operations;
+}
+
+int main() {
+    int totalBlocks = 100;
+    int blockNumber;
+    char choice;
+
+    printf("Enter the block number: ");
+    scanf("%d", &blockNumber);
+
+    printf("Enter the allocation strategy (C for contiguous, L for linked, I for indexed): ");
+    scanf(" %c", &choice);
+
+    int operations = 0;
+
+    switch (choice) {
+        case 'C':
+        case 'c':
+            operations = calculateContiguous(blockNumber, totalBlocks);
+            break;
+        case 'L':
+        case 'l':
+            operations = calculateLinked(blockNumber);
+            break;
+        case 'I':
+        case 'i':
+            operations = calculateIndexed(blockNumber, totalBlocks);
+            break;
+        default:
+            printf("Invalid choice!\n");
+            return 1;
+    }
+
+    printf("Number of disk I/O operations required: %d\n", operations);
+
+    return 0;
+}
